@@ -1,2 +1,24 @@
 Hej
 123123
+class Project{ 
+static void main(string[] args) {
+        // Ett example på tillåtet input
+        string possibleInput = "2,4,12"
+    }
+    static Point readPoints() {
+        Point p1 = new point();
+        Console.WriteLine("Enter the point")
+        string input = Console.Readline(possibleInput);
+        char[] inputArray = ToCharArry(input)
+        p1.x = inputArray[0]
+        p1.y = inputArray[1]
+        p1.pointscore = inputArray[2];
+
+        Class Point {
+    int x;
+    int y;
+    int pointScore;
+    point() {
+        x = 0;
+        y = 0;
+        pointScore = 0;
