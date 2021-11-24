@@ -1,5 +1,3 @@
-Hej
-123123
 class Project{ 
 static void main(string[] args) {
         // Ett example på tillåtet input
