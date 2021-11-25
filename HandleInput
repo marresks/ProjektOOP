@@ -1,0 +1,130 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Projektoop
+{
+    class HandleInput
+    {
+        public void handleinput()
+        {
+            string[] stringArray1 = { "1, 1, 5;2,2,10;", "Square,5,3,10;Circle,1,1,200;", "Square,5;Circle,10;" };
+
+        }
+        public string[] MakeCoordArray(string[] input)
+        {
+            string[] temp1 = new string[2];
+            temp1 = input[0].Split(';'.ToString());
+
+            for (int i = 0; i < temp1.Length; i++)
+            {
+                if (temp1[i].Contains(" "))
+                {
+
+                    string temp = temp1[i].Replace(" ", "");
+
+                    temp1[i] = temp;
+                }
+            }
+
+            string[] temp2 = temp1[0].Split(",");
+            string[] temp3 = temp1[1].Split(",");
+            string[] result = new string[temp3.Length + temp2.Length];
+            for (int i = 0; i < result.Length; i++)
+            {
+                if (i < 3)
+                {
+                    result[i] = temp2[i];
+                }
+                else
+                {
+                    result[i] = temp3[i - 3];
+
+                }
+
+            }
+
+            return result;
+        }
+        public string[] MakeShapeArray(string[] input)
+        {
+            string[] temp1 = new string[2];
+
+            temp1 = input[1].Split(';'.ToString());
+
+            for (int i = 0; i < temp1.Length; i++)
+            {
+                if (temp1[i].Contains(" "))
+                {
+
+                    string temp = temp1[i].Replace(" ", "");
+
+                    temp1[i] = temp;
+                }
+            }
+
+            string[] temp2 = temp1[0].Split(",");
+            string[] temp3 = temp1[1].Split(",");
+            string[] result = new string[temp3.Length + temp2.Length];
+            for (int i = 0; i < result.Length; i++)
+            {
+                if (i < 4)
+                {
+                    result[i] = temp2[i];
+                }
+                else
+                {
+                    result[i] = temp3[i - 4];
+
+                }
+
+            }
+
+
+            return result;
+
+
+        }
+        public string[] MakePointArray(string[] input)
+        {
+            string[] temp1 = new string[2];
+
+            temp1 = input[2].Split(';'.ToString());
+
+            for (int i = 0; i < temp1.Length; i++)
+            {
+                if (temp1[i].Contains(" "))
+                {
+
+                    string temp = temp1[i].Replace(" ", "");
+
+                    temp1[i] = temp;
+                }
+            }
+
+            string[] temp2 = temp1[0].Split(",");
+            string[] temp3 = temp1[1].Split(",");
+            string[] result = new string[temp3.Length + temp2.Length];
+            for (int i = 0; i < result.Length; i++)
+            {
+                if (i < 2)
+                {
+                    result[i] = temp2[i];
+                }
+                else
+                {
+                    result[i] = temp3[i - 2];
+
+                }
+
+            }
+
+
+            return result;
+
+
+        }
+    }
+}
