@@ -1,0 +1,21 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Projektoop
+{
+    class Coordinate
+    {
+        public float PosX { get; private set; }
+        public float PosY { get; private set; }
+
+        public Coordinate(float posX, float posY)
+        {
+            PosX = posX;
+            PosY = posY;
+        }
+
+    }
+}
