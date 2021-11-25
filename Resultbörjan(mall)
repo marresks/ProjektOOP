@@ -1,0 +1,33 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Projektoop
+{
+    class Result
+    {
+        
+        public void CalculateAndPrint()
+        {
+            bool TEMPORARYBOOL = true; // Hämtas från metoden PointInShape
+            double TEMPORARYAREA = 10; // Hämtas från Circle/Polygon metod
+            double TEMPORARYSHAPESCORE = 100; // Hämtas från Scorearray index pos 1,3
+            double TEMPORARYPOINTSCORE = 5; // Hämtas från Coord array, index pos 2,5
+            double result = 0;
+            if (TEMPORARYBOOL == true)
+            {
+                result = TEMPORARYAREA + TEMPORARYSHAPESCORE + TEMPORARYPOINTSCORE;
+            }
+            else
+            {
+                result = (TEMPORARYAREA + TEMPORARYSHAPESCORE) / 4;
+            }
+            Math.Round(result, 0);
+            Console.WriteLine(result);
+
+
+        }
+    }
+}
