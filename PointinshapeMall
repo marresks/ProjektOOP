@@ -1,0 +1,32 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Projektoop
+{
+    class PointInShape
+    {
+        public void IsPointInShape()
+        {
+            int vertices = 4; // Antal hörn
+            int X = CoordArray[0]; // Första x kordinaten, den andra ligger på index pos 3;
+            int Y = CoordArray[1]; //Första y kordinaten, den andra ligger på index pos 4;
+            double j = 4; // Längd på sidor
+            bool IS_HIT = false;
+           
+
+            for (int i = 0; i < vertices; i++)
+            {
+                if(vertices[i].Y < Y && vertices[j].Y >= Y || vertices[j].Y < Y ||vertices[i].Y >= Y)
+                {
+                    if (vertices[i].X +(Y-vertices[i].Y / (vertices[j].Y - vertices[i].Y)*(vertices[j].X - vertices[i].X) < X))
+                    {
+                        IS_HIT = true;
+                    }
+                }
+            }
+        }
+    }
+}
