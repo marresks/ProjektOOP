@@ -1,0 +1,50 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Projektoop
+{
+    class Heptagon : Polygon
+    {
+        public int sides = 7;
+        public double angle = Math.PI * 2 / 7;
+        public double offset;
+        public double area;
+
+        public double GetAngle()
+        {
+            double angle = Math.PI * 2 / 7;
+            return angle;
+        }
+        public double GetOffset(double angle)
+        {
+            double offset;
+            if (sides % 2 == 0)
+            {
+                offset = angle / 2;
+            }
+            else
+            {
+                offset = 0;
+            }
+            return offset;
+        }
+
+        public override double GetArea(int sides, double Circumference)
+        {
+            {
+                double sidelenght = Circumference / sides;
+                double converting = ((25.7142857143) * Math.PI / 180);
+                double temp = ((1.75) * (sidelenght * sidelenght));
+                double Area = temp / Math.Tan(converting);
+                area = Area;
+                return Area;
+
+            }
+
+        }
+
+    }
+}
