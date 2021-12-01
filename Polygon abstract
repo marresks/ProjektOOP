@@ -1,0 +1,57 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Projektoop
+{
+    abstract class Polygon
+    {
+        public int Sides;
+        public double Angle;
+        public double Offset;
+
+        public List<double> Xcoord = new List<double>();
+        public List<double> Ycoord = new List<double>();
+
+        public double GetAngle(int sides)
+        {
+            double angle = Math.PI * 2 / sides;
+            return angle;
+        }
+        public double GetOffset(double angle, int sides)
+        {
+            double offset;
+            if (sides % 2 == 0)
+            {
+                offset = angle / 2;
+            }
+            else
+            {
+                offset = 0;
+            }
+            return offset;
+        }
+
+
+        public void GetVertices(int x, int y, int circum, double angle, double offset, int sides)
+        {
+          
+            for (int i = 0; i < sides; i++)
+            {
+                double xNEW = x + circum * Math.Sin(i * angle + offset);
+                double yNEW = y + circum * (Math.Sin(i * angle + offset));
+                Xcoord.Add(xNEW);
+                Ycoord.Add(yNEW);
+            }
+
+        }
+
+        public virtual double GetArea(int sides, double Circumference)
+        {
+            double Area = 0;
+            return Area;
+        }
+    }
+}
