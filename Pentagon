@@ -1,0 +1,31 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Projektoop
+{
+    class Pentagon : Polygon
+    {
+        public int sides = 6;
+        public double angle = Math.PI * 2 / 5;
+        public double offset;
+        public double area;
+
+        public override double GetArea(int sides, double Circumference)
+        {
+
+            double sidelenght = Circumference / sides;
+            double converting = (36 * Math.PI / 180);
+            double temp = (sidelenght / 2) / (Math.Tan(converting));
+            double temp2 = 0.5 * (sidelenght / 2) * (temp);
+            double Area = temp2 * 10;
+            area = Area;
+            return Area;
+
+        }
+
+
+    }
+}
