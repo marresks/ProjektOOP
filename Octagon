@@ -1,0 +1,35 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Projektoop
+{
+    class Octagon : Polygon
+    {
+        public int sides;
+        public double angle;
+        public double offset;
+        public double area;
+
+        public Octagon()
+        {
+            sides = 8;
+            angle = Math.PI * 2 / 8;            
+        }
+
+        public override double GetArea(int sides, double Circumference)
+        {
+            {
+                double Area = (2 * (1 + Math.Sqrt(2)) * sides * sides);
+                area = Area;
+                return Area;
+            }
+        }
+
+
+
+
+    }
+}
