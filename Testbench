@@ -1,0 +1,269 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Projektoop
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+
+            
+
+            string[] stringArray1 = { "1, 1, 5;2,2,10;", "Square,5,3,10;Circle,1,1,200;", "Square,5;Circle,10;" };
+
+            string[] CoordArray = MakeCoordArray(stringArray1);
+            string[] ShapeArray = MakeShapeArray(stringArray1);
+            string[] ScoreArray = MakeScoreArray(stringArray1);
+
+            // if (x == xSquare+-side/2 && y == ySquare+-side/2){
+            //HIT}
+            // if (x == xCircle+-r && y==yCircle+-r){hit}
+            // 
+
+
+            int i = 0;
+            int y = 3;
+            int z = 0;
+            double[] area = new double[2];
+            while (i < 5)
+            {
+                area[z] = GetShape(ShapeArray, i, y);
+                i += 4;
+                y += 4;
+                z++;
+            }
+            Console.WriteLine(area[0]);
+            Console.WriteLine(area[1]);
+
+
+            string[] MakeCoordArray(string[] input)
+            {
+                string[] temp1 = new string[2];
+                temp1 = input[0].Split(';'.ToString());
+
+                for (int i = 0; i < temp1.Length; i++)
+                {
+                    if (temp1[i].Contains(" "))
+                    {
+
+                        string temp = temp1[i].Replace(" ", "");
+
+                        temp1[i] = temp;
+                    }
+                }
+
+                string[] temp2 = temp1[0].Split(",");
+                string[] temp3 = temp1[1].Split(",");
+                string[] result = new string[temp3.Length + temp2.Length];
+                for (int i = 0; i < result.Length; i++)
+                {
+                    if (i < 3)
+                    {
+                        result[i] = temp2[i];
+                    }
+                    else
+                    {
+                        result[i] = temp3[i - 3];
+
+                    }
+
+                }
+
+                return result;
+            }
+            string[] MakeShapeArray(string[] input)
+            {
+                string[] temp1 = new string[2];
+
+                temp1 = input[1].Split(';'.ToString());
+
+                for (int i = 0; i < temp1.Length; i++)
+                {
+                    if (temp1[i].Contains(" "))
+                    {
+
+                        string temp = temp1[i].Replace(" ", "");
+
+                        temp1[i] = temp;
+                    }
+                }
+
+                string[] temp2 = temp1[0].Split(",");
+                string[] temp3 = temp1[1].Split(",");
+                string[] result = new string[temp3.Length + temp2.Length];
+                for (int i = 0; i < result.Length; i++)
+                {
+                    if (i < 4)
+                    {
+                        result[i] = temp2[i];
+                    }
+                    else
+                    {
+                        result[i] = temp3[i - 4];
+
+                    }
+
+                }
+
+
+                return result;
+
+
+            }
+            string[] MakeScoreArray(string[] input)
+            {
+                string[] temp1 = new string[2];
+
+                temp1 = input[2].Split(';'.ToString());
+
+                for (int i = 0; i < temp1.Length; i++)
+                {
+                    if (temp1[i].Contains(" "))
+                    {
+
+                        string temp = temp1[i].Replace(" ", "");
+
+                        temp1[i] = temp;
+                    }
+                }
+
+                string[] temp2 = temp1[0].Split(",");
+                string[] temp3 = temp1[1].Split(",");
+                string[] result = new string[temp3.Length + temp2.Length];
+                for (int i = 0; i < result.Length; i++)
+                {
+                    if (i < 2)
+                    {
+                        result[i] = temp2[i];
+                    }
+                    else
+                    {
+                        result[i] = temp3[i - 2];
+
+                    }
+
+                }
+
+
+                return result;
+
+
+            }
+            double GetShape(string[] Array, int i, int y)
+            {
+                double area;
+
+
+                if (double.TryParse(Array[y], out double Circumference))
+                {
+
+
+                    if (Array[i].ToUpper() == "SQUARE")
+                    {
+                        Square mySquare = new Square();
+                        area = mySquare.GetArea(4, Circumference);
+
+                    }
+                    else if (Array[i].ToUpper() == "CIRCLE")
+                    {
+                        Circle myCircle = new Circle();
+                        area = myCircle.GetArea(Circumference);
+
+                    }
+                    else if (Array[i].ToUpper() == "TRIANGLE")
+                    {
+                        Triangle myTriangle = new Triangle();
+                        area = myTriangle.GetArea(3, Circumference);
+
+                    }
+                    else if (Array[i].ToUpper() == "PENTAGON")
+                    {
+                        Pentagon myPentagon = new Pentagon();
+                        area = myPentagon.GetArea(5, Circumference);
+
+
+                    }
+
+                    else if (Array[i].ToUpper() == "HEXAGON")
+                    {
+                        Hexagon myHexagon = new Hexagon();
+                        area = myHexagon.GetArea(6, Circumference);
+
+                    }
+                    else if (Array[i].ToUpper() == "HEPTAGON")
+                    {
+                        Heptagon myHeptagon = new Heptagon();
+                        area = myHeptagon.GetArea(7, Circumference);
+
+                    }
+                    else if (Array[i].ToUpper() == "OCTAGON")
+                    {
+                        Octagon myOctagon = new Octagon();
+                        area = myOctagon.GetArea(8, Circumference);
+
+                    }
+                    else
+                    {
+                        Console.WriteLine("Error in input!");
+                        area = 0;
+
+                    }
+                    return area;
+                }
+                else
+                {
+                    Console.WriteLine("Error in input!");
+                }
+                return 0;
+
+            }
+
+            // Räkna ut koordinater för hörn vertices exempel pentagon
+
+
+            int sides = 5;
+            double angle = Math.PI * 2 / sides;
+
+            double offset;
+
+            if (sides % 2 == 0)
+            {
+                offset = angle / 2;
+            }
+            else
+            {
+                offset = 0;
+            }
+
+            double circum1 = Convert.ToInt32(ShapeArray[3]);
+            int x1 = Convert.ToInt32(ShapeArray[1]);
+            int y1 = Convert.ToInt32(ShapeArray[2]);
+
+
+            List<int> Xcoord = new List<int>();
+            List<int> Ycoord = new List<int>();
+            for (i = 0; i < sides; i++)
+            {
+                double xNEW = x1 + circum1 * Math.Sin(i * angle + offset);
+                double yNEW = y1 + circum1 * (Math.Sin(i * angle + offset));
+            }
+
+
+
+
+
+
+
+
+        }
+
+
+    }
+
+
+}
+
