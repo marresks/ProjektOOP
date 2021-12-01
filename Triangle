@@ -1,0 +1,27 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Projektoop
+{
+    class Triangle : Polygon
+    {
+        public int sides = 3;
+        public double angle = Math.PI * 2 / 3;
+        public double offset;
+        public double area;
+
+        public override double GetArea(int sides, double Circumference)
+        {
+            double Area;
+            double sidelenght;
+            sidelenght = Circumference / sides;
+            Area = (sidelenght * sidelenght) / 2;
+            return Area;
+        }
+
+
+    }
+}
