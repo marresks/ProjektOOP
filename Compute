@@ -1,0 +1,65 @@
+# ProjektOOP
+ class Compute
+    {
+        ErrorHandler errorHandler = new ErrorHandler();
+
+        /// <summary>
+        ///  Return the result if the points hits the shape
+        /// </summary>
+        /// <param name="shape"></param>
+        /// <param name="shapeScore"></param>
+        /// <returns></returns>
+        public double Hit(IShape shape, IDictionary<string, int> shapeScore)
+        {
+            if (shapeScore.ContainsKey(shape.Name))
+            {
+                double area = shape.AreaOfShape();
+                int score = shapeScore[shape.Name];
+                double result = area * score;
+                return result ;
+            }
+            else
+            {
+                errorHandler.FormatError(3);
+                return 0;
+            }
+        }
+        /// <summary>
+        /// Return the result if the point miss's the shape
+        /// </summary>
+        /// <param name="point"></param>
+        /// <param name="shape"></param>
+        /// <param name="shapeScore"></param>
+        /// <returns></returns>
+        public double Miss(Point point, IShape shape, IDictionary<string, int> shapeScore)
+        {
+            if(shapeScore.ContainsKey(shape.Name))
+            {
+                double result = (double)(shapeScore[shape.Name] * point.Score) / 4 ;
+                return  result;
+            }
+            else
+            {
+                errorHandler.FormatError(3);
+                return 0;
+            }  
+        }
+
+        /// <summary>
+        /// Return the total sum
+        /// </summary>
+        /// <param name="scores"></param>
+        /// <returns></returns>
+        public int TotalScore(List<double> scores)
+        {
+            double totalScore = 0;
+            foreach (double score in scores)
+            {
+                totalScore += score;
+            }
+
+            int roundedTotalScore = (int)Math.Round(totalScore);
+            return roundedTotalScore ;
+            
+        }
+    }
