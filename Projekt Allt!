@@ -1,0 +1,884 @@
+using System;
+
+namespace SHAPESOOP
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+           
+
+        }
+    }
+}
+//////////////////////////////////////////////////
+
+public class Coordinate
+    {
+        // X+Y Coordinate
+        public int x { get; private set; }
+        public int y { get; private set; }
+
+        /// <summary>
+        /// Instance Coordinate
+        /// </summary>
+        /// <param name="posX"></param>
+        /// <param name="posY"></param>
+        public Coordinate(int posX, int posY)
+        {
+            x = posX;
+            y = posY;
+        }
+
+    }
+    
+    //////////////////////////////
+    
+    public class Vertices
+    {
+        /// <summary>
+        /// X+Y coordinates.
+        /// </summary>
+        public double x { get; private set; }
+        public double y { get; private set; }
+
+        /// <summary>
+        /// Instansera vertex med koordinat
+        /// </summary>
+        /// <param name="X"></param>
+        /// <param name="Y"></param>
+        public Vertices(double X, double Y)
+        {
+            x = X;
+            y = Y;
+        }
+        /// <summary>
+        /// instansera vertex med ValidationPoint
+        /// </summary>
+        /// <param name="P"></param>
+        public Vertices(ValidationPoint P)
+        {
+            x = P.Coord.x;
+            y = P.Coord.y;
+        }
+        /////////////////////////////////////
+        
+
+public class ValidationPoint
+    {
+        // Koordinat
+        public Coordinate Coord { get; private set; }
+        //PointScore
+        public int pScore { get; private set; }
+        /// <summary>
+        /// Instance a validationpoint
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="score"></param>
+        public ValidationPoint(int x, int y, int score)
+        {
+            Coord = new Coordinate(x, y);
+            pScore = score;
+        }
+    }
+    ////////////////////////////
+    
+    public class HandleInput
+    {
+        /// <summary>
+        /// Input uppdelad till tre listor
+        /// </summary>
+        public List<string> mypointList;
+        public List<string> myfigureList;
+        public List<string> myscoreList;
+
+        CorrectInput CorrectInput;
+
+        /// <summary>
+        /// Variabler för att göra listorna
+        /// </summary>
+        private string _temp;
+        private string _points;
+        private string _shapes;
+        private string _shapeScore;
+
+        /// <summary>
+        /// Tar emot input, validerar sedan input, därefter gör den input redo för att placeras i lista.
+        /// </summary>
+        /// <param name="args"></param>
+        public HandleInput(string[] args)
+        {
+            CorrectInput = new CorrectInput();
+            CorrectInput.ValidateInput(args);
+
+            _points = args[0];
+            _shapes = args[1];
+            _shapeScore = args[2];
+
+            _points = NoSpace(_points);
+            _shapes = NoSpace(_shapes);
+            _shapeScore = NoSpace(_shapeScore);
+            _points = NoSemi(_points);
+            _shapes = NoSemi(_shapes);
+            _shapeScore = NoSemi(_shapeScore);
+
+            MakeList();
+
+        }
+
+        /// <summary>
+        /// Tar bort mellanslag i strängen.
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        private string NoSpace(string input)
+        {
+
+
+            for (int i = 0; i < input.Length; i++)
+            {
+                if (input[i] == ' ')
+                {
+
+                }
+                else
+                {
+                    _temp += input[i];
+                }
+
+            }
+            input = _temp;
+            _temp = null;
+            return input;
+
+        }
+        /// <summary>
+        /// Tar bort semikolon i strängen.
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        private string NoSemi(string input)
+        {
+            if (input[input.Length - 1] == ';')
+            {
+                for (int i = 0; i < input.Length; i++)
+                {
+                    _temp += input[i];
+                }
+                input = _temp;
+                _temp = null;
+                return input;
+            }
+            return input;
+        }
+        /// <summary>
+        /// Gör om sträng variablerna till listorna.
+        /// </summary>
+        private void MakeList()
+        {
+            mypointList = _points.Split(';').ToList();
+            myfigureList = _shapes.Split(';').ToList();
+            myscoreList = _shapeScore.Split(';').ToList();
+        }
+
+        /// <summary>
+        /// Gör om stränglista till point lista
+        /// </summary>
+        /// <param name="myPointsList"></param>
+        /// <returns></returns>
+        public List<ValidationPoint> MakePointList(List<string> myPointsList)
+        {
+            List<ValidationPoint> Points = new List<ValidationPoint>();
+            for (int i = 0; i < myPointsList.Count; i++)
+            {
+                List<string> pointstring = mypointList[i].Split(',').ToList();
+                CorrectInput.ValidateList(pointstring, 3);
+                List<int> pointint = new List<int>();
+                pointint.Capacity = 3;
+
+
+                if (int.TryParse(pointstring[0], out int v))
+                {
+                    pointint.Add(v);
+                    if (int.TryParse(pointstring[1], out v))
+                    {
+                        pointint.Add(v);
+                        if (int.TryParse(pointstring[2], out v))
+                        {
+                            pointint.Add(v);
+                        }
+                        else
+                        {
+                            CorrectInput.ErrorMessage();
+                        }
+                    }
+                    else
+                    {
+                        CorrectInput.ErrorMessage();
+                    }
+                }
+                else
+                {
+                    CorrectInput.ErrorMessage();
+                }
+                Points.Add(new ValidationPoint(pointint[0], pointint[1], pointint[2]));
+
+
+
+
+
+            }
+            return Points;
+        }
+        /// <summary>
+        /// Gör om sträng till int i figure lista
+        /// </summary>
+        /// <param name="myfigureList"></param>
+        /// <returns></returns>
+        public List<IFigures> MakeFigureList(List<string> myfigureList)
+        {
+            List<IFigures> Figures = new List<IFigures>();
+            for (int i = 0; i < myfigureList.Count; i++)
+            {
+                List<string> figurestring = myfigureList[i].Split(',').ToList();
+                CorrectInput.ValidateList(figurestring, 4);
+                string name = figurestring[0];
+                CorrectInput.ValidateFigureName(name);
+                List<int> figuresint = new List<int>();
+
+
+
+                if (int.TryParse(figurestring[0], out int v))
+                {
+                    figuresint.Add(v);
+                    if (int.TryParse(figurestring[1], out v))
+                    {
+                        figuresint.Add(v);
+                        if (int.TryParse(figurestring[2], out v))
+                        {
+                            figuresint.Add(v);
+                        }
+                        else
+                        {
+                            CorrectInput.ErrorMessage();
+                        }
+                    }
+                    else
+                    {
+                        CorrectInput.ErrorMessage();
+                    }
+                }
+                else
+                {
+                    CorrectInput.ErrorMessage();
+                }
+                Figures.Add(MakeFigures(name, figuresint[0], figuresint[1], figuresint[2]));
+            }
+            return Figures;
+        }
+        /// <summary>
+        /// Gör om sträng till int i score lista.
+        /// </summary>
+        /// <param name="myscoreList"></param>
+        /// <returns></returns>
+        public Dictionary<string, int> MakeScores(List<string> myscoreList)
+        {
+            Dictionary<string, int> figureScores = new Dictionary<string, int>();
+            for (int i = 0; i < myscoreList.Count; i++)
+            {
+                List<string> score = new List<string>();
+                score = myscoreList[i].Split(',').ToList();
+                CorrectInput.ValidateList(score, 2);
+                string name = score[0];
+                CorrectInput.ValidateFigureName(name);
+
+                if (figureScores.ContainsKey(name))
+                {
+                    CorrectInput.ErrorMessage();
+                }
+
+                if (int.TryParse(score[1], out int v))
+                {
+                    figureScores.Add(name, v);
+                }
+                else
+                {
+                    CorrectInput.ErrorMessage();
+                }
+
+
+            }
+            return figureScores;
+        }
+
+
+        /// <summary>
+        /// Skapar en ny figur.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="peri"></param>
+        /// <returns></returns>
+        public IFigures MakeFigures(string name, int x, int y, int peri)
+        {
+            if (name != "CIRCLE")
+            {
+                int sides = 0;
+                switch (name)
+                {
+                    case "TRIANGLE":
+                        sides = 3;
+                        break;
+                    case "SQUARE":
+                        sides = 4;
+                        break;
+                    case "PENTAGON":
+                        sides = 5;
+                        break;
+                    case "HEXAGON":
+                        sides = 6;
+                        break;
+                    case "HEPTAGON":
+                        sides = 7;
+                        break;
+                    case "OCTAGON":
+                        sides = 8;
+                        break;
+                    default:
+                        CorrectInput.ErrorMessage();
+                        break;
+                        
+                }
+                return new FigurePolygon(x, y, sides, name, peri);
+            }
+            else
+            {
+                return new FigureCircle(x, y, peri);
+            }
+            
+        }
+    }
+    ////////////////////////////////
+    
+    public class CorrectInput
+    {
+        /// <summary>
+        /// Kontrollerar att rätt mängd input förts in i string[] args.
+        /// </summary>
+        /// <param name="args"></param>
+        public void ValidateInput (string[] args)
+        {
+            if(args.Length < 3)
+            {
+                Console.WriteLine($"You have entered {args.Length} inputs. \nThe minimum inputs are 3 in the following order: Validationpoints -> Shapes -> ShapeScores");
+                Environment.Exit(0);
+            }
+            else if (args.Length > 3)
+            {
+                Console.WriteLine($"You have entered {args.Length} inputs.\nThe maximum amount of inputs are 3 in the following order: Validationpoints->Shapes->ShapeScores");
+            }
+        }
+        /// <summary>
+        /// Metod som ser till att formen är en accepterad form.
+        /// </summary>
+        /// <param name="shape"></param>
+        public void ValidateFigureName(string shape)
+        {
+            shape = shape.ToUpper();
+            string[] ShapeName = { "TRIANGLE", "SQUARE", "PENTAGON", "HEXAGON", "HEPTAGON", "OCTAGON", "CIRCLE" };
+            bool IsCorrect = false;
+
+            for (int i = 0; i < ShapeName.Length; i++)
+            {
+                if (shape == ShapeName[i])
+                {
+                    IsCorrect = true;
+                }
+            }
+            if (IsCorrect == false)
+            {
+                Console.WriteLine($"{shape} is not a valid shape. You have to submit one of the following shapes: ");
+                for (int i = 0; i < ShapeName.Length; i++)
+                {
+                    if (i != ShapeName.Length - 1)
+                    {
+                        Console.WriteLine(ShapeName[i] + ", ");
+                    }
+                    else
+                    {
+                        Console.WriteLine(ShapeName[i]);
+                    }
+                }
+                Environment.Exit(0);
+            }
+            
+        }
+        /// <summary>
+        /// Metod som skriver ut felmeddelanden. Användaren har möjlighet att välja vad den vill veta.
+        /// </summary>
+        public void ErrorMessage()
+        {
+            string ans = string.Empty;
+            Console.WriteLine($"An error has been detected in your input. For guidance on how to fill in input, enter one of the following numbers:\n0: Exit\n1:Input points guide\n2: Input Shapes guide\n3: Input shapescore guide");
+            while (ans != "0")
+            {
+                ans = Console.ReadLine();
+            
+                switch (ans)
+                {
+                    case "1":
+                        Console.WriteLine($"Input format for points is the following: X,Y,Score followed by a {";"}");
+                        Console.WriteLine($"For additional input guidance enter one of the following numbers:\n0: Exit\n1:Input points guide\n2: Input Shapes guide\n3: Input shapescore guide");
+                        break;
+                    case "2":
+                        Console.WriteLine($"Input format for shapes is the following: Shape,X,Y,Perimiter followed by a {";"}");
+                        Console.WriteLine($"For additional input guidance enter one of the following numbers:\n0: Exit\n1:Input points guide\n2: Input Shapes guide\n3: Input shapescore guide");
+                        break;
+                    case "3":
+                        Console.WriteLine($"Input format for shapescore is the following: Shape,,ShapeScore followed by a {";"}");
+                        Console.WriteLine($"For additional input guidance enter one of the following numbers:\n0: Exit\n1:Input points guide\n2: Input Shapes guide\n3: Input shapescore guide");
+                        break;
+                    default:
+                        Console.WriteLine("Retry your selection. For guidance on how to fill in input, enter one of the following numbers:\n0: Exit\n1:Input points guide\n2: Input Shapes guide\n3: Input shapescore guide");
+                        break;
+
+                }
+            }
+        }
+
+        /// <summary>
+        /// Kontrollerar att listan är av rätt längd.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list"></param>
+        /// <param name="lenght"></param>
+        public void ValidateList<T>(IList<T> list, int lenght)
+        {
+            if(list.Count != lenght)
+            {
+                ErrorMessage();
+            }
+        }
+    }
+    
+    //////////////////////////////////////////////////////////////////////////
+    
+    
+    public interface IFigures
+    {
+        public string FigureName { get; }
+        public double GetFigureArea();
+        public bool IsPointInFigure(ValidationPoint P);
+    }
+    
+    ////////////////////////////////////////////////////
+    
+    public class FigureCircle : IFigures
+    {
+        public string FigureName { get; private set; }
+        private int Perimeter;
+        private double Radius;
+        private Coordinate Positions;
+
+
+
+        public FigureCircle(int posX, int posY, int _perimeter)
+        {
+            FigureName = "CIRCLE";
+            Perimeter = _perimeter;
+            Radius = PerToRad();
+            Positions = new Coordinate(posX, posY);
+        }
+
+        private double PerToRad()
+        {
+            return Perimeter / (2 * Math.PI);
+        }
+
+        public double GetFigureArea()
+        {
+            return Math.Pow(Radius, 2) * Math.PI;
+        }
+
+        public bool IsPointInFigure(ValidationPoint P)
+        {
+            //om värdet på x^2 + y^2 är mindre eller lika med radien upphöjt till två så ligger punkten i figuren.
+            double RadiusSqrt = (Math.Pow(Positions.x, 2) + Math.Pow(Positions.y, 2));
+
+            if (RadiusSqrt > Math.Pow(PerToRad(), 2))
+            {
+                return false;
+            }
+            else 
+            {
+                return true;
+            }
+
+        }
+
+    }
+    
+    //////////////////////////////////////////////////
+    
+    
+    class FigurePolygon : IFigures
+    {
+        public string FigureName { get; private set; }
+
+        private Coordinate position;
+        private int sides;
+        private int perimeter;
+        private double sideLength;
+        private List<Vertices> vertices;
+        private double apothem;
+
+
+        public FigurePolygon(int X, int Y, int Sides, string Name, int Perimeter)
+        {
+            FigureName = Name;
+            position = new Coordinate(X, Y);
+            sides = Sides;
+            perimeter = Perimeter;
+            sideLength = (double)Perimeter / Sides;
+            apothem = CalculateApothem();
+            vertices = CalculateVertices();
+        }
+        /// <summary>
+        /// Räknar ut apotemet
+        /// </summary>
+        /// <returns></returns>
+        private double CalculateApothem()
+        {
+            //Avståndet från centrum till mittpunkten på varje sida
+            return (sideLength / 2) * Math.Cos(Math.PI / sides) / (Math.Sin(Math.PI / sides));
+        }
+
+        /// <summary>
+        /// Räknar ut var polygonens alla hörnpunkter befinner sig
+        /// </summary>
+        /// <returns></returns>
+        public List<Vertices> CalculateVertices()
+        {
+            //Polygonens centrum uttryckt som en vertex (så att alla uträkningar sker med doubles)
+            Vertices centerPoint = new Vertices(position.x, position.y);
+
+            //Summan av alla innervinklar blir (n - 2) * π radianer
+            double innerAngle = ((sides - 2) * Math.PI) / sides;
+
+            //Det är dock yttervinkeln vi behöver, vilket är like med 2 * π - innervinkeln
+            double outerAngle = Math.PI - innerAngle;
+
+            //Vi byger upp polygonen av ett antal punkter fördelade runtom centrumpunkten i form av en vertex array
+            //De två första punkterna utgör den liggande baslinjen, avståndet i y-led från mittpunkten utgörs av innerradien
+            List<Vertices> shape = new List<Vertices> { Capacity = sides };
+            shape.Add(new Vertices(centerPoint.x - sideLength / 2, centerPoint.y - apothem));
+            shape.Add(new Vertices(shape[0].x + sideLength, shape[0].y));
+
+            //Rotera en punkt (px, py) runt en annan punkt (ox, oy) med vinkel theta och den nya positionen blir:            
+            //p'x = cos(theta) * (px-ox) - sin(theta) * (py-oy) + ox
+            //p'y = sin(theta) * (px-ox) + cos(theta) * (py-oy) + oy
+            //Vi gör detta med resterande vertexpunkter, motsols
+            for (int i = 2; i < shape.Capacity; i++)
+            {
+                double x = Math.Cos(outerAngle) * (shape[i - 1].x - centerPoint.x) - Math.Sin(outerAngle) * (shape[i - 1].y - centerPoint.y) + centerPoint.x;
+                double y = Math.Sin(outerAngle) * (shape[i - 1].x - centerPoint.x) + Math.Cos(outerAngle) * (shape[i - 1].y - centerPoint.y) + centerPoint.y;
+                shape.Insert(i, new Vertices(x, y));
+            }
+            return shape;
+        }
+
+        /// <summary>
+        /// Testar om en punkt befinner sig inuti polygonen
+        /// </summary>
+        /// <param name="_p"></param>
+        /// <returns></returns>
+        public bool IsPointInFigure(ValidationPoint P)
+        {
+            //Kod inspirerad av guide på https://www.geeksforgeeks.org/how-to-check-if-a-given-point-lies-inside-a-polygon/
+
+            //Metoden bygger på att vi drar en horisontal linje från p till en punkt utanför polygonen
+            //Sedan testar vi detta linjesegment mot varje sida av polygonen, och räknar hur många gånger testlinjen korsar en polygonsida
+            //Udda antal överlapp betyder en träff
+            //(I vårt fall kan den bara korsa polygonen 0, 1 eller 2 gånger, men sättet vi gör det på innebär vissa specialfall att testa för också)
+            //Om p befinner sig mitt på ett segment innebär det en automatisk träff
+
+            //Hämta polygonens form
+            List<Vertices> polygon = vertices;
+            //Gör om punktens koordinater till en vertex, för enklare hantering            
+            Vertices p = new Vertices(P);
+
+            //Vi skapa en bounding box för polygonen
+            //Faller punkten utanför denna är det en automatisk miss
+            double xMin, xMax, yMin, yMax;
+            xMin = xMax = yMin = yMax = 0;
+            for (int b = 0; b < polygon.Count; b++)
+            {
+                xMin = Math.Min(polygon[b].x, xMin);
+                xMax = Math.Max(polygon[b].x, xMax);
+                yMin = Math.Min(polygon[b].y, yMin);
+                yMax = Math.Max(polygon[b].y, yMax);
+            }
+
+            //Testa om punkten befinner sig utanför polygonens bounding box
+            if (p.x < xMin || p.x > xMax || p.x < yMin || p.y > yMax)
+            {
+                return false;
+            }
+
+            //Skapa en punkt utanför bounding box i samma höjd som p
+            Vertices outside = new Vertices(xMax + 1, p.y);
+
+            int intersections = 0;
+            for (int i = 0; i < polygon.Count; i++)
+            {
+                int next = (i + 1) % polygon.Count;
+                if (SegmentsIntersect(polygon[i], polygon[next], p, outside))
+                {
+                    //Om punkten inte bara korsar linjen utan också ligger på linjen vet vi att det är en träff
+                    //Vi behöver då inte testa efter fler korsningar utan kan returnera sant redan här
+                    if (Orientation(polygon[i], p, polygon[next]) == 0)
+                    {
+                        return OnSegment(polygon[i], p, polygon[next]);
+                    }
+                    intersections++;
+                }
+            }
+            return (intersections % 2 == 1);
+        }
+
+        /// <summary>
+        /// Testar om två linjesegment korsar varandra
+        /// </summary>
+        /// <param name="_a"></param>
+        /// <param name="_b"></param>
+        /// <param name="_c"></param>
+        /// <param name="_d"></param>
+        /// <returns></returns>
+        private bool SegmentsIntersect(Vertices a, Vertices b, Vertices c, Vertices d)
+        {
+            //Det första segmentet går från punkt a till b
+            //Det andra segmentet går från punkt c till d
+
+            //Metoden använder orientationen mellan de olika ändpunkterna för att avgöra om segmenten korsar eller inte
+            //Fyra olika relationer behöver testas:
+            int r1 = Orientation(a, b, c); //Testar första linjen mot starten på andra
+            int r2 = Orientation(a, b, d); //Testar första linjen mot slutet på andra
+            int r3 = Orientation(c, d, a); //Testar andra linjen mot starten på första
+            int r4 = Orientation(c, d, b); //Testar andra linjen mot slutet på första
+
+            //Om abc har en annan orientation än abd, och acd har en annan orientation än bcd, betyder det att segmenten korsar varandra
+            bool crossing;
+            if (r1 != r2 && r3 != r4)
+            {
+                crossing = true;
+            }
+
+            //Under vissa omständigheter kan de fyra punkternas orientation vara kolinjära
+            //(Notera att detta endast sker när ab är horisontal, eftersom vi vet att testlinjen, cd, alltid är horisontal)
+            //Hur testar vi då att de också överlappar?
+            //I varje fall av kolinjäritet testar vi om den fjärde punkten befinner sig mellan den andra linjens ändpunkter
+            else if (r1 == 0 && OnSegment(a, c, b))
+            {
+                crossing = true;
+            }
+            else if (r2 == 0 && OnSegment(a, d, b))
+            {
+                crossing = true;
+            }
+            else if (r3 == 0 && OnSegment(c, a, d))
+            {
+                crossing = true;
+            }
+            else if (r4 == 0 && OnSegment(c, b, d))
+            {
+                crossing = true;
+            }
+            else
+            {
+                crossing = false;
+            }
+            return crossing;
+        }
+
+        /// <summary>
+        /// Undersöker huruvida tre punkter är positionerade medurs, moturs eller kolinjärt
+        /// </summary>
+        /// <param name="_p"></param>
+        /// <param name="_q"></param>
+        /// <param name="_r"></param>
+        /// <returns></returns>
+        private int Orientation(Vertices p, Vertices q, Vertices r)
+        {
+            //Lösningen är baserad på huruvida tre punker i ett koordinatsystem är orienterade medsols eller motsols eller att de ligger på samma linje
+            //Om 0: p, q och r är kolinjära
+            //Om 1: Medurs rotation
+            //Om 2: Moturs rotation
+
+            double orientation = (q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y);
+
+            if (orientation == 0)
+            {
+                return 0;
+            }
+            else if (orientation > 0)
+            {
+                return 1;
+            }
+            else
+            {
+                return 2;
+            }
+        }
+
+        /// <summary>
+        /// Testar om en punkt (q) ligger på ett linjesegment (pr)
+        /// </summary>
+        /// <param name="_p"></param>
+        /// <param name="_q"></param>
+        /// <param name="_r"></param>
+        /// <returns></returns>
+        public bool OnSegment(Coordinate p, Coordinate q, Coordinate r)
+        {
+            if (q.x <= Math.Max(p.x, r.x) && q.x >= Math.Min(p.x, r.x) &&
+                q.y <= Math.Max(p.y, r.y) && q.y >= Math.Min(p.y, r.y));
+            {
+                return true;
+            }
+
+        }
+
+        /// <summary>
+        /// Räknar ut arean på polygonen
+        /// </summary>
+        /// <returns></returns>
+        public double GetFigureArea()
+        {
+            double a = sides * Math.Pow(apothem, 2) * Math.Tan(Math.PI / sides);
+            return a;
+        }
+    }
+    
+    
+    
+    
+    ///////////////////////////////////////////////
+    
+    
+    class ComputeResult
+    {
+        CorrectInput CorrectInput = new CorrectInput();
+
+        /// <summary>
+        ///  Metod som returnerar ett lämpligt resultat ifall att det blivit en träff
+        /// </summary>
+        /// <param name="shape"></param>
+        /// <param name="shapeScore"></param>
+        /// <returns></returns>
+        public double IsHit(IFigures figure, IDictionary<string, int> shapeScore, ValidationPoint vPoint)
+        {
+            if (shapeScore.ContainsKey(figure.FigureName))
+            {
+                double area = figure.GetFigureArea();
+                double result = area + shapeScore[figure.FigureName] + vPoint.pScore;
+                return result;
+            }
+            else
+            {
+                CorrectInput.ErrorMessage();
+                return 0;
+            }
+        }
+        /// <summary>
+        /// Metod som returnerar ett lämpligt resultat ifall att det blivit en miss
+        /// </summary>
+        /// <param name="point"></param>
+        /// <param name="shape"></param>
+        /// <param name="shapeScore"></param>
+        /// <returns></returns>
+        public double IsMiss(ValidationPoint vPoint, IFigures figure, IDictionary<string, int> shapeScore)
+        {
+            if (shapeScore.ContainsKey(figure.FigureName))
+            {
+                double area = figure.GetFigureArea();
+                double result = (shapeScore[figure.FigureName] + area) / 4;
+                return result;
+            }
+            else
+            {
+                CorrectInput.ErrorMessage();
+                return 0;
+            }
+        }
+
+        /// <summary>
+        /// Returnerar och avrundar totalpoäng
+        /// </summary>
+        /// <param name="scores"></param>
+        /// <returns></returns>
+        public int TotalScore(List<double> myScores)
+        {
+            double totalScore = 0;
+            foreach (double score in myScores)
+            {
+                totalScore += score;
+            }
+
+            int roundedTotalScore = (int)Math.Round(totalScore);
+            return roundedTotalScore;
+
+        }
+    }
+    
+    
+    
+    
+    /////////////////////////////////////////////////////////
+    
+    
+    
+    class Execute
+    {
+        private List<IFigures> figures;
+        private List<ValidationPoint> points;
+        private Dictionary<string, int> shapeScore;
+        private List<double> scores;
+        public int TotalScore { get; private set; }
+
+        HandleInput handleInput;
+        ComputeResult computeResult;
+
+        public Execute(string[] args)
+        {
+            computeResult = new ComputeResult();
+            handleInput = new HandleInput(args);
+
+            points = handleInput.MakePointList(handleInput.mypointList);
+            figures = handleInput.MakeFigureList(handleInput.myfigureList);
+            shapeScore = handleInput.MakeScores(handleInput.myscoreList);
+            scores = new List<double>();
+
+
+            foreach (IFigures figures in figures)
+            {
+                foreach(ValidationPoint P in points)
+                {
+                    if (figures.IsPointInFigure(P))
+                    {
+                        scores.Add(computeResult.IsHit(figures, shapeScore, P));
+                    }
+                    else
+                    {
+                        scores.Add(computeResult.IsMiss(P, figures, shapeScore));
+                    }
+                }
+            }
+            TotalScore = computeResult.TotalScore(scores);
+
+        }
+    }
+    
+    
+    
+    
