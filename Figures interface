@@ -1,0 +1,7 @@
+# ProjektOOP
+  public interface IFigures
+    {
+        public string FigureName { get; }
+        public double FigureArea();
+        public bool PointInFigure();
+    }
