@@ -1,0 +1,89 @@
+# ProjektOOP
+class FiguresPolygons
+    {
+
+
+        public bool OnSegment(Coordinate p, Coordinate q, Coordinate r)
+        {
+            if (q.PosX <= Math.Max(p.PosX, r.PosX) && q.PosX >= Math.Min(p.PosX, r.PosX) &&
+                q.PosY <= Math.Max(p.PosY, r.PosY) && q.PosY >= Math.Min(p.PosY, r.PosY)) ;
+            {
+                return true;
+            }
+
+        }
+        public float Orientation(Coordinate p, Coordinate q, Coordinate r) //if a point is inside or on the edge of the shape
+        {
+            float val = (q.PosY - p.PosY) * (r.PosX - q.PosX) - (q.PosX - p.PosX) * (r.PosY - q.PosY);
+            if (val == 0)
+                return 0;
+            else if (val > 0)
+                return 1;
+            return val;
+
+        }
+        public bool DoIntersect(Coordinate p1, Coordinate q1, Coordinate p2, Coordinate q2)
+        {
+            float o1, o2, o3, o4;
+            o1 = Orientation(p1, q1, p2);
+            o2 = Orientation(p1, q1, q2);
+            o3 = Orientation(p2, q1, p1);
+            o4 = Orientation(p2, q2, q1);
+
+            if (o1 != o2 && 03 != o4)
+            {
+                return true;
+            }
+            if (o1 == 0 && OnSegment(p1, p2, q1))
+            {
+                return true;
+            }
+            if (o2 == 0 && OnSegment(p1, q2, q1))
+            {
+                return true;
+
+            }
+            if (o3 == 0 && OnSegment(p2, p1, q2))
+            {
+                return true;
+            }
+            if (o4 == 0 && OnSegment(p2, q1, q2))
+            {
+                return true;
+            }
+            return false;
+
+        }
+         public bool isInside (Coordinate polygon[], Coordinate p, float n)
+        {
+            if (n < 3)
+            {
+                return false;
+            }
+            int INF = 10000;
+            Coordinate extreme = new Coordinate(INF, p.PosY);
+            int i = 0;
+            int count = 0;
+
+
+            do
+            {  int next = (int)((i + 1) % n);
+ 
+                if (DoIntersect(polygon[i], polygon[next], p, extreme))
+                {
+ 
+                    if (Orientation(polygon[i], p, polygon[next]) == 0)
+                    {
+                        return OnSegment(polygon[i], p,
+                        polygon[next]);
+                    }
+
+                    count++;
+                }
+                i = next;
+            } while (i != 0);
+
+            return (count % 2 == 1);
+        }
+
+    }
