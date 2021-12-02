@@ -1,0 +1,25 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SHAPESOOP
+{
+    public class Vertices
+    {
+        public double x { get; private set; }
+        public double y { get; private set; }
+
+        public Vertices(double X, double Y)
+        {
+            x = X;
+            y = Y;
+        }
+        public Vertices(ValidationPoint P)
+        {
+            x = P.Coord.x;
+            y = P.Coord.y;
+        }
+    }
+}
