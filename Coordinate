@@ -8,10 +8,15 @@ namespace SHAPESOOP
 {
     public class Coordinate
     {
-        
+        // X+Y Coordinate
         public int x { get; private set; }
         public int y { get; private set; }
 
+        /// <summary>
+        /// Instance Coordinate
+        /// </summary>
+        /// <param name="posX"></param>
+        /// <param name="posY"></param>
         public Coordinate(int posX, int posY)
         {
             x = posX;
