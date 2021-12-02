@@ -8,14 +8,26 @@ namespace SHAPESOOP
 {
     public class Vertices
     {
+        /// <summary>
+        /// X+Y coordinates.
+        /// </summary>
         public double x { get; private set; }
         public double y { get; private set; }
 
+        /// <summary>
+        /// Instansera vertex med koordinat
+        /// </summary>
+        /// <param name="X"></param>
+        /// <param name="Y"></param>
         public Vertices(double X, double Y)
         {
             x = X;
             y = Y;
         }
+        /// <summary>
+        /// instansera vertex med ValidationPoint
+        /// </summary>
+        /// <param name="P"></param>
         public Vertices(ValidationPoint P)
         {
             x = P.Coord.x;
