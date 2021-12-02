@@ -1,0 +1,109 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SHAPESOOP
+{
+    class CorrectInput
+    {
+        /// <summary>
+        /// Kontrollerar att rätt mängd input förts in i string[] args.
+        /// </summary>
+        /// <param name="args"></param>
+        public void ValidateInput (string[] args)
+        {
+            if(args.Length < 3)
+            {
+                Console.WriteLine($"You have entered {args.Length} inputs. \nThe minimum inputs are 3 in the following order: Validationpoints -> Shapes -> ShapeScores");
+                Environment.Exit(0);
+            }
+            else if (args.Length > 3)
+            {
+                Console.WriteLine($"You have entered {args.Length} inputs.\nThe maximum amount of inputs are 3 in the following order: Validationpoints->Shapes->ShapeScores");
+            }
+        }
+        /// <summary>
+        /// Metod som ser till att formen är en accepterad form.
+        /// </summary>
+        /// <param name="shape"></param>
+        public void ValidateShapeName(string shape)
+        {
+            shape = shape.ToUpper();
+            string[] ShapeName = { "TRIANGLE", "SQUARE", "PENTAGON", "HEXAGON", "HEPTAGON", "OCTAGON", "CIRCLE" };
+            bool IsCorrect = false;
+
+            for (int i = 0; i < ShapeName.Length; i++)
+            {
+                if (shape == ShapeName[i])
+                {
+                    IsCorrect = true;
+                }
+            }
+            if (IsCorrect == false)
+            {
+                Console.WriteLine($"{shape} is not a valid shape. You have to submit one of the following shapes: ");
+                for (int i = 0; i < ShapeName.Length; i++)
+                {
+                    if (i != ShapeName.Length - 1)
+                    {
+                        Console.WriteLine(ShapeName[i] + ", ");
+                    }
+                    else
+                    {
+                        Console.WriteLine(ShapeName[i]);
+                    }
+                }
+                Environment.Exit(0);
+            }
+            
+        }
+        /// <summary>
+        /// Metod som skriver ut felmeddelanden. Användaren har möjlighet att välja vad den vill veta.
+        /// </summary>
+        public void ErrorMessage()
+        {
+            string ans = string.Empty;
+            Console.WriteLine($"An error has been detected in your input. For guidance on how to fill in input, enter one of the following numbers:\n0: Exit\n1:Input points guide\n2: Input Shapes guide\n3: Input shapescore guide");
+            while (ans != "0")
+            {
+                ans = Console.ReadLine();
+            
+                switch (ans)
+                {
+                    case "1":
+                        Console.WriteLine($"Input format for points is the following: X,Y,Score followed by a {";"}");
+                        Console.WriteLine($"For additional input guidance enter one of the following numbers:\n0: Exit\n1:Input points guide\n2: Input Shapes guide\n3: Input shapescore guide");
+                        break;
+                    case "2":
+                        Console.WriteLine($"Input format for shapes is the following: Shape,X,Y,Perimiter followed by a {";"}");
+                        Console.WriteLine($"For additional input guidance enter one of the following numbers:\n0: Exit\n1:Input points guide\n2: Input Shapes guide\n3: Input shapescore guide");
+                        break;
+                    case "3":
+                        Console.WriteLine($"Input format for shapescore is the following: Shape,,ShapeScore followed by a {";"}");
+                        Console.WriteLine($"For additional input guidance enter one of the following numbers:\n0: Exit\n1:Input points guide\n2: Input Shapes guide\n3: Input shapescore guide");
+                        break;
+                    default:
+                        Console.WriteLine("Retry your selection. For guidance on how to fill in input, enter one of the following numbers:\n0: Exit\n1:Input points guide\n2: Input Shapes guide\n3: Input shapescore guide");
+                        break;
+
+                }
+            }
+        }
+
+        /// <summary>
+        /// Kontrollerar att listan är av rätt längd.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list"></param>
+        /// <param name="lenght"></param>
+        public void ValidateList<T>(IList<T> list, int lenght)
+        {
+            if(list.Count != lenght)
+            {
+                ErrorMessage();
+            }
+        }
+    }
+}
