@@ -189,47 +189,31 @@ public class ValidationPoint
         /// <returns></returns>
         public List<ValidationPoint> MakePointList(List<string> myPointsList)
         {
+            
             List<ValidationPoint> Points = new List<ValidationPoint>();
-            for (int i = 0; i < myPointsList.Count; i++)
-            {
-                List<string> pointstring = mypointList[i].Split(',').ToList();
-                CorrectInput.ValidateList(pointstring, 3);
-                List<int> pointint = new List<int>();
-                pointint.Capacity = 3;
+            
+            
+                List<string> pointString = mypointList[0].Split(',').ToList();
+                CorrectInput.ValidateList(pointString, 3);
+                List<int> pointInt = new List<int>();
+                pointInt.Capacity = 3;
 
-
-                if (int.TryParse(pointstring[0], out int v))
+                try
                 {
-                    pointint.Add(v);
-                    if (int.TryParse(pointstring[1], out v))
-                    {
-                        pointint.Add(v);
-                        if (int.TryParse(pointstring[2], out v))
-                        {
-                            pointint.Add(v);
-                        }
-                        else
-                        {
-                            CorrectInput.ErrorMessage();
-                        }
-                    }
-                    else
-                    {
-                        CorrectInput.ErrorMessage();
-                    }
+                    pointInt.Add(int.Parse(pointString[0]));
+                    pointInt.Add(int.Parse(pointString[1]));
+                    pointInt.Add(int.Parse(pointString[2]));
                 }
-                else
+                catch
                 {
                     CorrectInput.ErrorMessage();
                 }
-                Points.Add(new ValidationPoint(pointint[0], pointint[1], pointint[2]));
 
-
-
-
-
-            }
+                Points.Add(new ValidationPoint(pointInt[0], pointInt[1], pointInt[2]));
+            
             return Points;
+
+
         }
         /// <summary>
         /// Gör om sträng till int i figure lista
@@ -239,9 +223,8 @@ public class ValidationPoint
         public List<IFigures> MakeFigureList(List<string> myfigureList)
         {
             List<IFigures> Figures = new List<IFigures>();
-            for (int i = 0; i < myfigureList.Count; i++)
-            {
-                List<string> figurestring = myfigureList[i].Split(',').ToList();
+            
+                List<string> figurestring = myfigureList[0].Split(',').ToList();
                 CorrectInput.ValidateList(figurestring, 4);
                 string name = figurestring[0];
                 CorrectInput.ValidateFigureName(name);
@@ -249,13 +232,13 @@ public class ValidationPoint
 
 
 
-                if (int.TryParse(figurestring[0], out int v))
+                if (int.TryParse(figurestring[1], out int v))
                 {
                     figuresint.Add(v);
-                    if (int.TryParse(figurestring[1], out v))
+                    if (int.TryParse(figurestring[2], out v))
                     {
                         figuresint.Add(v);
-                        if (int.TryParse(figurestring[2], out v))
+                        if (int.TryParse(figurestring[3], out v))
                         {
                             figuresint.Add(v);
                         }
@@ -274,7 +257,7 @@ public class ValidationPoint
                     CorrectInput.ErrorMessage();
                 }
                 Figures.Add(MakeFigures(name, figuresint[0], figuresint[1], figuresint[2]));
-            }
+            
             return Figures;
         }
         /// <summary>
@@ -285,10 +268,10 @@ public class ValidationPoint
         public Dictionary<string, int> MakeScores(List<string> myscoreList)
         {
             Dictionary<string, int> figureScores = new Dictionary<string, int>();
-            for (int i = 0; i < myscoreList.Count; i++)
-            {
+            
+            
                 List<string> score = new List<string>();
-                score = myscoreList[i].Split(',').ToList();
+                score = myscoreList[0].Split(',').ToList();
                 CorrectInput.ValidateList(score, 2);
                 string name = score[0];
                 CorrectInput.ValidateFigureName(name);
@@ -308,7 +291,7 @@ public class ValidationPoint
                 }
 
 
-            }
+            
             return figureScores;
         }
 
@@ -523,40 +506,40 @@ public class ValidationPoint
     //////////////////////////////////////////////////
     
     
-    class FigurePolygon : IFigures
+   public class FigurePolygon : IFigures
     {
         public string FigureName { get; private set; }
 
         private Coordinate position;
-        private int sides;
-        private int perimeter;
-        private double sideLength;
         private List<Vertices> vertices;
+        private int sides;
+        private double sideLength;
+        private int perimeter;
         private double apothem;
 
-
-        public FigurePolygon(int X, int Y, int Sides, string Name, int Perimeter)
+        public FigurePolygon(int X, int Y, int Sides, string name, int Perimeter)
         {
-            FigureName = Name;
+            FigureName = name;
             position = new Coordinate(X, Y);
             sides = Sides;
             perimeter = Perimeter;
-            sideLength = (double)Perimeter / Sides;
+            sideLength = perimeter / sides;
             apothem = CalculateApothem();
             vertices = CalculateVertices();
         }
+
         /// <summary>
-        /// Räknar ut apotemet
+        /// Räknar ut apotemet för polygonen
         /// </summary>
         /// <returns></returns>
         private double CalculateApothem()
         {
-            //Avståndet från centrum till mittpunkten på varje sida
+            
             return (sideLength / 2) * Math.Cos(Math.PI / sides) / (Math.Sin(Math.PI / sides));
         }
 
         /// <summary>
-        /// Räknar ut var polygonens alla hörnpunkter befinner sig
+        /// Metod som tar reda på vart polygonens hörn är, inspirerat av mall från UU.
         /// </summary>
         /// <returns></returns>
         public List<Vertices> CalculateVertices()
@@ -582,7 +565,7 @@ public class ValidationPoint
             //Vi gör detta med resterande vertexpunkter, motsols
             for (int i = 2; i < shape.Capacity; i++)
             {
-                double x = Math.Cos(outerAngle) * (shape[i - 1].x - centerPoint.x) - Math.Sin(outerAngle) * (shape[i - 1].y - centerPoint.y) + centerPoint.x;
+                double x = Math.Cos(outerAngle) * (shape[i - 1].x - centerPoint.x) - Math.Sin(outerAngle) * (shape[i - 1].y - centerPoint.y) + centerPoint.y;
                 double y = Math.Sin(outerAngle) * (shape[i - 1].x - centerPoint.x) + Math.Cos(outerAngle) * (shape[i - 1].y - centerPoint.y) + centerPoint.y;
                 shape.Insert(i, new Vertices(x, y));
             }
@@ -622,7 +605,7 @@ public class ValidationPoint
             }
 
             //Testa om punkten befinner sig utanför polygonens bounding box
-            if (p.x < xMin || p.x > xMax || p.x < yMin || p.y > yMax)
+            if (p.x < xMin || p.x > xMax || p.y < yMin || p.y > yMax)
             {
                 return false;
             }
@@ -739,14 +722,19 @@ public class ValidationPoint
         /// <param name="_q"></param>
         /// <param name="_r"></param>
         /// <returns></returns>
-        public bool OnSegment(Coordinate p, Coordinate q, Coordinate r)
+        private bool OnSegment(Vertices p, Vertices q, Vertices r)
         {
-            if (q.x <= Math.Max(p.x, r.x) && q.x >= Math.Min(p.x, r.x) &&
-                q.y <= Math.Max(p.y, r.y) && q.y >= Math.Min(p.y, r.y));
+            if (q.x <= Math.Max(p.x, r.x) &&
+                q.x >= Math.Min(p.x, r.x) &&
+                q.y <= Math.Max(p.y, r.y) &&
+                q.y >= Math.Min(p.y, r.y))
             {
                 return true;
             }
-
+            else
+            {
+                return false;
+            }
         }
 
         /// <summary>
@@ -759,7 +747,6 @@ public class ValidationPoint
             return a;
         }
     }
-    
     
     
     
