@@ -8,8 +8,16 @@ namespace SHAPESOOP
 {
     public class ValidationPoint
     {
+        // Koordinat
         public Coordinate Coord { get; private set; }
+        //PointScore
         public int pScore { get; private set; }
+        /// <summary>
+        /// Instance a validationpoint
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="score"></param>
         public ValidationPoint(int x, int y, int score)
         {
             Coord = new Coordinate(x, y);
