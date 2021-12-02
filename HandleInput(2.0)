@@ -1,0 +1,111 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SHAPESOOP
+{
+    class HandleInput
+    {
+        /// <summary>
+        /// Input uppdelad till tre listor
+        /// </summary>
+        public List<string> mypointList;
+        public List<string> myshapeList;
+        public List<string> myscoreList;
+
+        CorrectInput CorrectInput;
+
+        /// <summary>
+        /// Variabler för att göra listorna
+        /// </summary>
+        private string _temp;
+        private string _points;
+        private string _shapes;
+        private string _shapeScore;
+
+        /// <summary>
+        /// Tar emot input, validerar sedan input, därefter gör den input redo för att placeras i lista.
+        /// </summary>
+        /// <param name="args"></param>
+        public HandleInput(string[] args)
+        {
+            CorrectInput = new CorrectInput();
+            CorrectInput.ValidateInput(args);
+
+            _points = args[0];
+            _shapes = args[1];
+            _shapeScore = args[2];
+
+            _points = NoSpace(_points);
+            _shapes = NoSpace(_shapes);
+            _shapeScore = NoSpace(_shapeScore);
+            _points = NoSemi(_points);
+            _shapes = NoSemi(_shapes);
+            _shapeScore = NoSemi(_shapeScore);
+
+            MakeList();
+
+        }
+
+        /// <summary>
+        /// Tar bort mellanslag i strängen.
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        private string NoSpace(string input)
+        {
+            
+
+            for (int i = 0; i < input.Length; i++)
+            {
+                if (input[i] == ' ')
+                {
+
+                }
+                else
+                {
+                    _temp += input[i];
+                }
+
+            }
+            input = _temp;
+            _temp = null;
+            return input;
+
+        }
+        /// <summary>
+        /// Tar bort semikolon i strängen.
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        private string NoSemi(string input)
+        {
+            if (input[input.Length -1] == ';')
+            {
+                for (int i = 0; i < input.Length; i++)
+                {
+                    _temp += input[i];
+                }
+                input = _temp;
+                _temp = null;
+                return input;
+            }
+            return input;
+        }
+        /// <summary>
+        /// Gör om sträng variablerna till listorna.
+        /// </summary>
+        private void MakeList()
+        {
+            mypointList = _points.Split(';').ToList();
+            myshapeList = _shapes.Split(';').ToList();
+            myscoreList = _shapeScore.Split(';').ToList();
+        }
+
+
+
+
+    }
+}
