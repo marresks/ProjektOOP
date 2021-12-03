@@ -1,0 +1,183 @@
+# ProjektOOP
+
+ public class FigurePolygon : IFigures
+    {
+        public string FigureName { get; private set; }
+
+        private Coordinate position;
+        private List<Vertices> vertices;
+        private int sides;
+        private double sideLength;
+        private int perimeter;
+        private double apothem;
+
+        public FigurePolygon(int X, int Y, int Sides, string Name, int Perimeter)
+        {
+            FigureName = Name;
+            position = new Coordinate(X, Y);
+            sides = Sides;
+            perimeter = Perimeter;
+            sideLength = (double)perimeter / sides;
+            apothem = CalcApothem();
+            vertices = CalcVertices();
+        }
+
+        public List<Vertices> CalcVertices()
+        {
+            //kod insperation av studium prokejtarbete Pseudokod för polygonberäkningar 
+            double innerCorner = ((sides - 2) * Math.PI) / sides;
+            double outerCorner = Math.PI - innerCorner;
+
+
+            List<Vertices> shape = new List<Vertices> { Capacity = sides };
+            Vertices centerPoint = new Vertices(position.x, position.y);
+            
+
+            shape.Add(new Vertices(centerPoint.x - sideLength / 2, centerPoint.y - apothem));
+            shape.Add(new Vertices(shape[0].x + sideLength, shape[0].y));
+
+            for (int i = 2; i < shape.Capacity; i++)
+            {               
+                double pointX = (shape[i - 1].x - centerPoint.x) - Math.Sin(outerCorner) * Math.Cos(outerCorner) * (shape[i - 1].y - centerPoint.y) + centerPoint.y;
+                double PointY = (shape[i - 1].x - centerPoint.x) + Math.Cos(outerCorner) * Math.Sin(outerCorner) * (shape[i - 1].y - centerPoint.y) + centerPoint.y;
+                shape.Insert(i, new Vertices(pointX, PointY));
+            }
+            return shape;
+        }
+
+        private double CalcApothem()
+        {
+            double apothem = (sideLength / 2) * Math.Cos(Math.PI / sides) / (Math.Sin(Math.PI / sides));
+            return apothem;
+        }
+
+
+
+        public bool IsPointInFigure(ValidationPoint P)
+        {
+            //kod insperation https://youtu.be/xNn6LIFjqc0 & https://www.geeksforgeeks.org/how-to-check-if-a-given-point-lies-inside-a-polygon/
+            //metoden utgår från att man drar en lång horisontal linje från q till en punkt utanför polygonen.
+            //om linjen som vi drar korsar polygonens sida i en punkt så ligger punkten i polygonen.
+            //om linjen korsar polygonens sida två gånger så ligger den utanför.
+            //om punkten q befinner sig redan på polygonens sida så räknas det som träff.
+
+
+            List<Vertices> polygon = vertices;  //Vilken form polygonen har      
+            Vertices q = new Vertices(P);  //Förvandlar polygonens koordinater i dem olika punkter till vertex
+
+
+            //om punkten faller utanför denna avgränsning så är det miss 
+            double xMin, xMax, yMin, yMax; 
+            xMin = xMax = yMin = yMax = 0; 
+            for (int i = 0; i < polygon.Count; i++)
+            {
+                xMin = Math.Min(polygon[i].x, xMin);
+                yMin = Math.Min(polygon[i].y, yMin);
+
+                xMax = Math.Max(polygon[i].x, xMax);
+                yMax = Math.Max(polygon[i].y, yMax);
+            }
+            //testar vart punkten befinner sig och returnera false om den befinner sig utanför
+            if ( q.y < yMin || q.y > yMax || q.x < xMin || q.x > xMax) 
+            {
+                return false;
+            }
+
+            //sätter en punkt utanför avgränsningen med samma y koordinat.  
+            Vertices outside = new Vertices(xMax + 1, q.y);
+            int intersections = 0;
+
+
+            for (int j = 0; j < polygon.Count; j++)
+            {
+                int next = (j + 1) % polygon.Count;
+                if (DoIntersect(polygon[j], polygon[next], q, outside))
+                {
+                   
+                    if (Orientation(polygon[j], q, polygon[next]) == 0)
+                    {
+                        return OnSegment(polygon[j], q, polygon[next]);
+                    }
+                    intersections++;
+                }
+            }
+            return (intersections % 2 == 1);
+        }
+
+
+        private bool DoIntersect(Vertices p1, Vertices p2, Vertices q1, Vertices q2)
+        {
+            //metoden kommer att testa om linjen som är ritad från punkten vi har korsar polygonen eller inte.
+            //vi testar fyra olika relationer för att avgöra om linjen korsar eller inte.
+            double o1, o2, o3, o4;
+            o1 = Orientation(p1, p2, q1);
+            o2 = Orientation(p1, p2, q2);
+            o3 = Orientation(q1, q2, p1);
+            o4 = Orientation(q1, q2, p2);
+
+            if (o1 != o2 && o3 != o4)
+            {
+                return true;
+            }
+            if (o1 == 0 && OnSegment(p1, q1, p2))
+            {
+                return true;
+            }
+            if (o2 == 0 && OnSegment(p1, q2, p2))
+            {
+                return true;
+
+            }
+            if (o3 == 0 && OnSegment(q1, p1, q2))
+            {
+                return true;
+            }
+            if (o4 == 0 && OnSegment(q1, p2, q2))
+            {
+                return true;
+            }
+            return false;
+        }
+
+
+        public double Orientation(Vertices p, Vertices q, Vertices r)             
+        {
+            //Denna metod testar om punkten ligger på polygon sidan eller om den ligger inne.
+            double val = (q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y);
+            if (val == 0)
+            {
+                return 0;
+            }
+
+            else if (val > 0)
+            {
+                return 1;
+            }
+
+            else
+            {
+                return 2;
+            }
+
+        }
+
+        public bool OnSegment(Vertices p, Vertices q, Vertices r)
+        {
+            //här testar vi om koordinaterna x och y för punkten vi har är mellan punkterna p, q och r
+
+            if (q.x <= Math.Max(p.x, r.x) && q.x >= Math.Min(p.x, r.x) &&
+                q.y <= Math.Max(p.y, r.y) && q.x >= Math.Min(p.x, r.x))
+            {
+                return true;
+            }
+            return false;
+
+        }
+
+        public double GetFigureArea()
+           {
+           
+            double area = Math.Pow(apothem, 2) * Math.Tan(Math.PI / sides) * (double)sides;
+                return area;
+           }
+        
